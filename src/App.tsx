@@ -35,9 +35,6 @@ const App: React.FC = () => {
   const onChangeGrid = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const row = parseInt(event.target.value);
-      if (isNaN(row) || row > 20) {
-        return;
-      }
       setGrid(
         Array(row)
           .fill(1)
@@ -56,10 +53,18 @@ const App: React.FC = () => {
     ) => {
       switch (state) {
         case "Start":
-          setStart([rowIndex, colIndex]);
+          if (grid[rowIndex][colIndex] === 0) {
+            alert("Cannot put the start on wall");
+          } else {
+            setStart([rowIndex, colIndex]);
+          }
           break;
         case "Finish":
-          setEnd([rowIndex, colIndex]);
+          if (grid[rowIndex][colIndex] === 0) {
+            alert("Cannot put the finish on wall");
+          } else {
+            setEnd([rowIndex, colIndex]);
+          }
           break;
         case "Wall":
           const gridCopy = [...grid];
@@ -109,6 +114,28 @@ const App: React.FC = () => {
     [path, start, end, grid]
   );
 
+  const randomBoard = useCallback(() => {
+    const lenghtArrayMax = grid.length;
+    const gridCopy = [...grid];
+    gridCopy[getRandomInt(lenghtArrayMax)][getRandomInt(lenghtArrayMax)] = 0;
+    setGrid(gridCopy);
+  }, [grid]);
+
+  const getRandomInt = (max: number) => {
+    return Math.floor(Math.random() * Math.floor(max));
+  };
+
+  const resetBoard = useCallback(() => {
+    setGrid(
+      Array(grid.length)
+        .fill(1)
+        .map(() => Array(grid.length).fill(1))
+    );
+    setPath([]);
+    setStart(undefined);
+    setEnd(undefined);
+  }, [grid]);
+
   return (
     <div className="App">
       <GithubCorner href="https://github.com/Raphael0010/astarReact" />
@@ -119,10 +146,15 @@ const App: React.FC = () => {
       Press <b>F</b> to select the end
       <br />
       Press <b>W</b> to place wall
-      <br />
+      {grid.length > 5 && (
+        <button style={{ marginLeft: "3px" }} onClick={randomBoard}>
+          Random Wall
+        </button>
+      )}
       <p>
         Select number of square <input onChange={onChangeGrid} />
         {start && end && <button onClick={findPath}>FindPath</button>}
+        {grid && start && end && <button onClick={resetBoard}>Reset</button>}
       </p>
       <br />
       <svg width={widthGrid * grid.length} height={widthGrid * grid.length}>
