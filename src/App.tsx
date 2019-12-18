@@ -63,7 +63,11 @@ const App: React.FC = () => {
           break;
         case "Wall":
           const gridCopy = [...grid];
-          gridCopy[rowIndex][colIndex] = 0;
+          if (grid[rowIndex][colIndex] === 0) {
+            gridCopy[rowIndex][colIndex] = 1;
+          } else {
+            gridCopy[rowIndex][colIndex] = 0;
+          }
           setGrid(gridCopy);
           break;
         case "Value":
