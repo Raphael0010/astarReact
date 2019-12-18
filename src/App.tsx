@@ -35,6 +35,9 @@ const App: React.FC = () => {
   const onChangeGrid = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const row = parseInt(event.target.value);
+      if (isNaN(row)) {
+        return;
+      }
       setGrid(
         Array(row)
           .fill(1)
@@ -92,7 +95,11 @@ const App: React.FC = () => {
 
   const findPath = useCallback(() => {
     if (start && end) {
-      setPath(PathFinder(grid, start, end));
+      try {
+        setPath(PathFinder(grid, start, end));
+      } catch (e) {
+        alert("There is no way possible");
+      }
     }
   }, [grid, start, end]);
 
