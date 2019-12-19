@@ -1,5 +1,7 @@
 # A* Pathfinder in Typescript & React
 
+Thanks to [@yovanoc](https://github.com/yovanoc) <- React Master
+
 ## Usage
 
 
